@@ -46,6 +46,7 @@
         mounted: function () {
             console.log('--> mounted!');
 
+            // La liste des vertices.
             let vertices = [];
 
             // Create a scene which will hold all our meshes to be rendered
@@ -84,9 +85,6 @@
             scene.add(lights[1]);
             scene.add(lights[2]);
 
-            // Append to the document
-            document.querySelector('#SceneContainer').appendChild(renderer.domElement);
-
             // Materials
             let phongMat = new THREE.MeshPhongMaterial({
                 color: 0x156289,
@@ -97,7 +95,6 @@
                 polygonOffsetFactor: 1, // positive value pushes polygon further away
                 polygonOffsetUnits: 1
             });
-
             let lineMat = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
                 wireframe: true
@@ -109,15 +106,14 @@
             //let geometry = new THREE.TorusKnotGeometry(15, 3, 290, 30);
             //let geometry = new THREE.SphereGeometry(8, 30, 30);
             let geometry = new THREE.OctahedronGeometry(4, 3);
-            let plane = new THREE.Mesh(geometry, phongMat);
-            plane.rotateX(Math.PI / 2);
-            let planeWire = plane.clone();
-            planeWire.material = lineMat;
+            let meshPlane = new THREE.Mesh(geometry, phongMat);
+            meshPlane.rotateX(Math.PI / 2);
+            let meshPlaneWire = meshPlane.clone();
+            meshPlaneWire.material = lineMat;
 
-
-            scene.add(plane);
-            scene.add(planeWire);
-
+            // On ajoute les mesh à la scène
+            scene.add(meshPlane);
+            scene.add(meshPlaneWire);
 
             // Controls de la caméra.
             let controls = new OrbitControls(camera, renderer.domElement);
@@ -125,14 +121,10 @@
                 renderer.render(scene, camera);
             }); // add this only if there is no animation loop (requestAnimationFrame)
 
-
             // On stocke les vertices.
-            for (let i = 0; i < plane.geometry.vertices.length; i++) {
-                //geometry.vertices[i].z = Math.random() * (max - min) + min;
-                let currentVertice = plane.geometry.vertices[i];
-                vertices.push(new Vertice(currentVertice));
-            }
-
+            meshPlane.geometry.vertices.forEach((item) => {
+                vertices.push(new Vertice(item));
+            });
 
             // On écoute le tick de Tweenmax
             TweenMax.ticker.addEventListener("tick", render);
@@ -146,12 +138,12 @@
 
             // Ecoute le tick et fait le rendu.
             function render() {
-                plane.geometry.verticesNeedUpdate = true;
-                //console.log(vertice);
+                meshPlane.geometry.verticesNeedUpdate = true;
                 renderer.render(scene, camera);
-
             }
 
+            // Append to the document
+            document.querySelector('#SceneContainer').appendChild(renderer.domElement);
 
         },
         beforeUpdate: function () {
