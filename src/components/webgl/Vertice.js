@@ -15,14 +15,14 @@ class Vertice {
     }
 
     animateMe() {
-        let max = .14;
-        let min = -.14;
+        let max = .18;
+        let min = -.18;
 
 
-        TweenMax.to(this.vertice, Vertice.randomRange(1, 8.5), {
+        TweenMax.to(this.vertice, Vertice.randomRange(5, 10), {
             x: Vertice.randomRange(this.originVertice.x + min, this.originVertice.x + max),
             y: Vertice.randomRange(this.originVertice.y + min, this.originVertice.y + max),
-            z: Vertice.randomRange(this.originVertice.z + min, this.originVertice.z + max),
+            z: Vertice.randomRange(this.originVertice.z + (min + 0.1), this.originVertice.z + (max - 0.08)),
             onComplete: () => {
                 this.animateMe();
             },

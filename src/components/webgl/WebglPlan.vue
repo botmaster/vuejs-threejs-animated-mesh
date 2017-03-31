@@ -30,6 +30,7 @@
 
     // Create a scene which will hold all our meshes to be rendered
     let scene = new THREE.Scene();
+    //scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
 
     // Create and position a camera
     let camera = new THREE.PerspectiveCamera(
@@ -40,7 +41,8 @@
     );
 
     // Reposition the camera
-    camera.position.set(10, 10, 0);
+    //camera.position.set(10, 10, 0);
+    camera.position.set(3.4, 5.4, 0);
 
     // Point the camera at a given coordinate
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -76,12 +78,13 @@
     });
     let lineMat = new THREE.MeshBasicMaterial({
         color: 0x156289,
-        wireframe: true
+        wireframe: true,
+        wireframeLinewidth: 1
     });
 
 
     // Geometies
-    let geometry = new THREE.PlaneGeometry(15, 15, 30, 30);
+    let geometry = new THREE.PlaneGeometry(15, 15, 23, 23);
     //let geometry = new THREE.TorusKnotGeometry(15, 3, 290, 30);
     //let geometry = new THREE.SphereGeometry(8, 30, 30);
     //let geometry = new THREE.OctahedronGeometry(4, 3);
@@ -99,7 +102,13 @@
     meshPlaneWire.material = lineMat;
 
     // On créer des particules et on les positionne sur les vertices.
-    let particles = new THREE.Points(meshPlane.geometry, new THREE.PointsMaterial({color: 0x000000, size: 4, sizeAttenuation: false}));
+    let particles = new THREE.Points(meshPlane.geometry, new THREE.PointsMaterial({
+        color: 0x156289,
+        size: 6,
+        sizeAttenuation: false,
+        /*alphaTest: 0.5,
+         transparent: true*/
+    }));
     particles.rotateX(Math.PI / 2);
 
 
@@ -115,7 +124,7 @@
     }); // add this only if there is no animation loop (requestAnimationFrame)
 
 
-    // On écoute le tick de Tweenmax
+    // On map le ticker du navigateur avec celui de TweenMaw.
     TweenMax.ticker.addEventListener("tick", render);
 
     // On anim les vertices.
@@ -126,6 +135,7 @@
     // Ecoute le tick et fait le rendu.
     function render() {
         meshPlane.geometry.verticesNeedUpdate = true;
+        //console.log(camera.position);
         renderer.render(scene, camera);
     }
 
