@@ -75,24 +75,38 @@
         polygonOffsetUnits: 1
     });
     let lineMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
+        color: 0x156289,
         wireframe: true
     });
 
 
     // Geometies
-    //let geometry = new THREE.PlaneGeometry(15, 15, 16, 16);
-    let geometry = new THREE.TorusKnotGeometry(15, 3, 290, 30);
+    let geometry = new THREE.PlaneGeometry(15, 15, 30, 30);
+    //let geometry = new THREE.TorusKnotGeometry(15, 3, 290, 30);
     //let geometry = new THREE.SphereGeometry(8, 30, 30);
     //let geometry = new THREE.OctahedronGeometry(4, 3);
     let meshPlane = new THREE.Mesh(geometry, phongMat);
+
+    // On stocke les vertices.
+    meshPlane.geometry.vertices.forEach((item) => {
+        vertices.push(new Vertice(item));
+    });
+
     meshPlane.rotateX(Math.PI / 2);
+
+    // On clone le mesh du plan pour faire un plan en filaire.
     let meshPlaneWire = meshPlane.clone();
     meshPlaneWire.material = lineMat;
+
+    // On créer des particules et on les positionne sur les vertices.
+    let particles = new THREE.Points(meshPlane.geometry, new THREE.PointsMaterial({color: 0x000000, size: 4, sizeAttenuation: false}));
+    particles.rotateX(Math.PI / 2);
+
 
     // On ajoute les mesh à la scène
     scene.add(meshPlane);
     scene.add(meshPlaneWire);
+    scene.add(particles);
 
     // Controls de la caméra.
     let controls = new OrbitControls(camera, renderer.domElement);
@@ -100,10 +114,6 @@
         renderer.render(scene, camera);
     }); // add this only if there is no animation loop (requestAnimationFrame)
 
-    // On stocke les vertices.
-    meshPlane.geometry.vertices.forEach((item) => {
-        vertices.push(new Vertice(item));
-    });
 
     // On écoute le tick de Tweenmax
     TweenMax.ticker.addEventListener("tick", render);
